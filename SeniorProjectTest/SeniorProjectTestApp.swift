@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct SeniorProjectTestApp: App {
+    let viewModel = LoginController()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView{
+                ContentView()
+                    .environmentObject(viewModel)
+            }
+            
         }
     }
 }
