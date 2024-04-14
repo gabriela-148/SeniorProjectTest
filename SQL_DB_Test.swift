@@ -50,10 +50,97 @@ class LoginController: ObservableObject {
     @Published var isSignedIn = false // changes view in real time
     @Published var name = ""
     @Published var email = ""
+    @Published var userPoints = 0 // resets user points to 0 after each login - need to figure out how to save in program - ik its saved in DB
     
     @Published var foodList = [Food_Item]()
     @Published var calculationOrder = [Food_Item]()
+    @Published var userList = [User]()
     
+    @Published var currID: Int = -1
+    
+    
+    func getUserPoints(email: String) -> Int {
+        var pointValue: Int = 0
+        
+        do {
+            // Path to the SQLite database file
+            let dbPath = Bundle.main.path(forResource: "mydatabase", ofType: "db")!
+            
+            // Establish a connection to the SQLite database
+            let db = try Connection(dbPath)
+            
+            // Define the table and columns
+            let users = Table("usersList")
+            let storedUsername = Expression<String>("email")
+            let storedPoints = Expression<Int>("totalPoints")
+            
+            // Construct the query to select points for the specified email
+            let pointsQuery = users.select(storedPoints).filter(storedUsername == email)
+            
+            // Execute the query and try to fetch the user's points
+            if let user = try db.pluck(pointsQuery) {
+                // User found, retrieve the points value
+                pointValue = try user.get(storedPoints)
+                print("Current points: \(pointValue)")
+                
+            } else {
+                // User not found, print an error message
+                print("User with email '\(email)' not found")
+            }
+        } catch {
+            // Handle any errors that occur during database operations
+            print("Error: \(error)")
+        }
+        
+        // Return the points value associated with the user
+        return pointValue
+    }
+
+    
+    func addPoints(username: String) {
+        do {
+            // Path to the SQLite database file
+            let dbPath = Bundle.main.path(forResource: "mydatabase", ofType: "db")!
+            
+            // Establish a connection to the SQLite database
+            let db = try Connection(dbPath)
+
+            // Define table structure and columns
+            let users = Table("usersList")
+            let storedPoints = Expression<Int>("totalPoints")
+            let storedUsername = Expression<String>("email")
+
+            // Calculate points for the current item
+            let calculatedPoints = calculationOrder.reduce(0) { $0 + getPoints(water: $1.waterFP, carbon: $1.carbonFP) }
+
+            // Fetch the current user's total points
+            let currentUserQuery = users.filter(storedUsername == username)
+            guard let currentUser = try db.pluck(currentUserQuery) else {
+                print("User with email '\(username)' not found")
+                return
+            }
+            let currentPoints = try currentUser.get(storedPoints)
+
+            // Update the user's total points with the new calculated points
+            let updatedPoints = currentPoints + calculatedPoints
+            let updateQuery = users.filter(storedUsername == username).update(storedPoints <- updatedPoints)
+            
+            // Execute the update query
+            if try db.run(updateQuery) == 1 {
+                self.userPoints = updatedPoints
+                print("Points updated successfully for user \(username)")
+            } else {
+                print("Failed to update points for user \(username)")
+            }
+
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+
+
+
+
     func addToCalc(item: Food_Item) {
         calculationOrder.append(item)
     }
@@ -66,6 +153,34 @@ class LoginController: ObservableObject {
         self.isSignedIn = false
     }
     
+    func getEmailOfUser() -> String? {
+        do {
+            // Path to the SQLite database file
+            let dbPath = Bundle.main.path(forResource: "mydatabase", ofType: "db")!
+            
+            // Establish a connection to the SQLite database
+            let db = try Connection(dbPath)
+            
+            // Define the table and column
+            let users = Table("usersList")
+            let emailColumn = Expression<String>("email")
+            
+            // Fetch the first row from the 'usersList' table
+            if let user = try db.pluck(users.select(emailColumn)) {
+                // Extract and return the email from the row
+                return try user.get(emailColumn)
+            } else {
+                // If no row is found, return nil
+                return nil
+            }
+        } catch {
+            // Handle any errors that occur during database operations
+            print("Error: \(error)")
+            return nil
+        }
+    }
+
+    
     func resetPassword(username: String, newPassword: String, oldPassword: String) -> Bool {
         var success = false
         // Path to the SQLite database file
@@ -74,7 +189,7 @@ class LoginController: ObservableObject {
             // Establish a connection to the SQLite database
             let db = try Connection(dbPath)
             
-            let users = Table("users")
+            let users = Table("usersList")
             let storedUsername = Expression<String>("email")
             let storedPassword = Expression<String>("password")
             
@@ -105,15 +220,19 @@ class LoginController: ObservableObject {
             // Establish a connection to the SQLite database
             let db = try Connection(dbPath)
             
-            let users = Table("users")
+            let users = Table("usersList")
             let storedUsername = Expression<String>("email")
+            let storedID = Expression<Int>("id")
             let storedPassword = Expression<String>("password")
             let storedName = Expression<String>("name")
+            let storedPoints = Expression<Int>("totalPoints")
             
             let query = users.select(storedName)
                 .filter(storedUsername == username && storedPassword == password)
             
             let emailQuery = users.select(storedUsername)
+            
+            let pointsQuery = users.select(storedPoints)
             
             if let user = try db.pluck(query) {
                 // Login successful
@@ -121,13 +240,30 @@ class LoginController: ObservableObject {
                 
                 self.isSignedIn = true
                 self.name = user[storedName]
+                self.email = getEmailOfUser() ?? "testing"
                 self.foodList = fetchFoodItems()
+                // Fetch all rows from the 'food_items' table
+                for item in try db.prepare(users) {
+                    // Create Food_Item instance for each row and append to foodItemList
+                    let currUser = User(name: item[storedName],
+                                        email: item[storedUsername],
+                                        pwd: item[storedPassword],
+                                        id: item[storedID],
+                                        points: item[storedPoints])
+                    userList.append(currUser)
+                }
+            
             }
             
             if let user2 = try db.pluck(emailQuery) {
                 success = true
                 
                 self.email = user2[storedUsername]
+            }
+            
+            if let user3 = try db.pluck(pointsQuery) {
+                success = true
+                self.userPoints = user3[storedPoints]
             }
             
             
@@ -234,7 +370,7 @@ class LoginController: ObservableObject {
                     .update(storedWater <- waterValue)
                 try db.run(updateQuery)
                 
-                print("Carbon FP for \(name): \(waterValue)")
+                print("Water FP for \(name): \(waterValue)")
             }
         } catch {
             print("Error: \(error)")
@@ -295,7 +431,7 @@ class LoginController: ObservableObject {
             let db = try Connection(dbPath)
             
             // Define table structure and columns
-            let users = Table("users")
+            let users = Table("usersList")
             let name = Expression<String>("name")
             let items = Table("food_items")
             let food_name = Expression<String>("name")

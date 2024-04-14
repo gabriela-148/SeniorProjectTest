@@ -37,3 +37,32 @@ func getWaterFP(name: String, weight: any Numeric) -> any Numeric {
     return fp
 }
 
+func getPoints(water: Double, carbon: Double) -> Int {
+    let smallWater = 500.0
+    let smallCarbon = 5.0
+    let largeWater = 1000.0
+    let largeCarbon = 10.0
+    
+    var pointsToAdd = 0
+    
+    switch water {
+        case 0...smallWater:
+            pointsToAdd = pointsToAdd + 100
+        case smallWater...largeWater:
+            pointsToAdd = pointsToAdd + 50
+        default:
+            pointsToAdd = pointsToAdd + 5
+    }
+    
+    switch carbon {
+        case 0...smallCarbon:
+            pointsToAdd = pointsToAdd + 100
+        case smallCarbon...largeCarbon:
+            pointsToAdd = pointsToAdd + 50
+        default:
+            pointsToAdd = pointsToAdd + 5
+    }
+    
+    return pointsToAdd
+}
+

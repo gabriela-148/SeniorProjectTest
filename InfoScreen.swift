@@ -13,7 +13,6 @@ struct InfoScreen: View {
     @EnvironmentObject var viewModel: LoginController
     let item: Food_Item
     
-    //@ObservedObject var model = LoginController()
     var body: some View {
         
         VStack {

@@ -16,7 +16,7 @@ struct CartCalc: View {
         }
         
         
-        NavigationLink(destination: ComparisonCalc()) {
+        NavigationLink(destination: ComparisonCalc(viewModel: _viewModel, item_list: viewModel.calculationOrder)) {
             Text("Calculate")
                 .font(.subheadline)
                 .foregroundStyle(.white)
