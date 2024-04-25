@@ -96,7 +96,7 @@ class LoginController: ObservableObject {
         return pointValue
     }
 
-    
+    // Add rewards points based on footprint of the item in cart
     func addPoints(username: String) {
         do {
             // Path to the SQLite database file
@@ -111,6 +111,7 @@ class LoginController: ObservableObject {
             let storedUsername = Expression<String>("email")
 
             // Calculate points for the current item
+            
             let calculatedPoints = calculationOrder.reduce(0) { $0 + getPoints(water: $1.waterFP, carbon: $1.carbonFP) }
 
             // Fetch the current user's total points
@@ -140,19 +141,22 @@ class LoginController: ObservableObject {
 
 
 
-
+    // Adds item to cart
     func addToCalc(item: Food_Item) {
         calculationOrder.append(item)
     }
     
+    // Removes item from cart
     func removeFromCalc(item: Food_Item) {
         calculationOrder.removeAll { $0 == item }
     }
     
+    // Signs out user in real time
     func signOut() {
         self.isSignedIn = false
     }
     
+    // Returns the email String of the current user logged in
     func getEmailOfUser() -> String? {
         do {
             // Path to the SQLite database file
@@ -180,7 +184,7 @@ class LoginController: ObservableObject {
         }
     }
 
-    
+    // Changes the password for the current user as long as their old pwd matches
     func resetPassword(username: String, newPassword: String, oldPassword: String) -> Bool {
         var success = false
         // Path to the SQLite database file
@@ -211,6 +215,7 @@ class LoginController: ObservableObject {
         return success
     }
     
+    // Checks the input in the user database to login the user to the app
     func login(username: String, password: String) -> Bool {
         var success = true
         
@@ -338,6 +343,7 @@ class LoginController: ObservableObject {
         return foodItemList
     }
     
+    // Calculates all the water footprints for items in the database
     func calcWaterFP() {
         do {
             // Define your SQLite database connection
@@ -377,6 +383,7 @@ class LoginController: ObservableObject {
         }
     }
     
+    // Calculates all the carbon footprints for items in the database
     func calcCarbonFP() {
         
         do {
@@ -421,7 +428,7 @@ class LoginController: ObservableObject {
 
 
 
-
+    // Returns all the records in the tables in teh database
     func getAllTables() {
         // Path to the SQLite database file
         let dbPath = Bundle.main.path(forResource: "mydatabase", ofType: "db")!

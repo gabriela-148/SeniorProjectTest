@@ -11,6 +11,7 @@ import Charts
 struct ComparisonCalc: View {
     
     @EnvironmentObject var viewModel: LoginController
+    @State private var showError = false
     
     let item_list: [Food_Item]
     
@@ -18,35 +19,90 @@ struct ComparisonCalc: View {
         
         VStack {
             List {
+                // Loop through items in cart and displays their information similar to InfoScreen
                 ForEach(item_list, id: \.self) { item in
-                    HStack {
+                    VStack {
+                        Text(item.name)
+                            .font(.headline)
+                            .padding(.top, 8)
+                            
                         
-                        VStack {
-                            Chart {
-                                BarMark(x:PlottableValue.value("Sandwich", item.name) , y: .value("Pounds of CO2", item.carbonFP) )
-                                    .annotation( position: .overlay) {
-                                        Text("\(item.carbonFP)")
-                                            .foregroundColor(.black)
-                                    }
-                                    .foregroundStyle(.red)
+                        HStack { // carbon and water footprint next to each other
+                            VStack { // carbon
+                                Rectangle()
+                                    .fill(Color.blue)
+                                    .frame(width: 30, height: CGFloat(item.carbonFP * 5)) // Adjust multiplier as needed
+                                    .cornerRadius(5)
+                                    
+                                
+                                Text("Carbon Footprint")
+                                    .font(.headline)
+                                    .padding(.top, 8)
+                                
+                                Text("\(item.carbonFP) pounds of CO2/kg")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                    .padding(.bottom, 8)
+                                    .multilineTextAlignment(.center)
                             }
-                            Chart {
-                                BarMark(x:PlottableValue.value("Sandwich", item.name) , y: .value("Liters of Water", item.waterFP) )
-                                    .annotation(position: .overlay) {
-                                        Text("\(item.waterFP)")
-                                            .foregroundColor(.white)
-                                    }
-                            }
-                            .chartXAxis(Visibility.visible)
-                            .chartYAxis(Visibility.visible)
-                        }//v stack
-                    }// h stack
+                            
+                            Spacer() // Add Spacer to ensure even alignment
+                            
+                            VStack { // water
+                                Rectangle()
+                                    .fill(Color.blue)
+                                    .frame(width: 30, height: CGFloat(item.waterFP)) // Adjust multiplier as needed
+                                    .cornerRadius(5)
+                                    
+                                
+                                Text("Water Footprint")
+                                    .font(.headline)
+                                    .padding(.top, 8)
+                                
+                                Text("\(item.waterFP) L of water/kg")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                    .padding(.bottom, 8)
+                                    .multilineTextAlignment(.center)
+                                
+                            }//water vstack
+                        }//h stack
+                        Spacer()
+                        
+                        Text("The purpose of these values are to educate you on the environmental impact that fast food has the environment.")
+                                    .font(.subheadline)
+                                    .padding()
+                                    .border(Color.black, width: 1)
+                                    .multilineTextAlignment(.center)
+                        
+                        Spacer()
+                        
+                        Text("Equivalency Values")
+                            .font(.headline)
+                            .padding(.top, 8)
+                        
+                        Text("Eating a \(item.name) is the same as burning \(item.carbonFP/20) gallons of gas while driving a car.") // Divided by 20 bc 20 gallons of CO2 in one gallon of gas
+                            .font(.subheadline)
+                            .padding(.bottom, 8)
+                        Text("Eating a \(item.name) is the same as drinking \(String(format: "%.f", item.waterFP/0.5)) 12 oz. bottles of water.") // Divided by 0.5 bc 0.5L of water in a regular size plastic water bottle
+                            .font(.subheadline)
+                            .padding(.bottom, 8)
+                        
+                        Spacer()
+                       
+                    }
                     .padding()
                 } // for each
             } // list
             
+            // Checks if the cart is empty first, if not continue otherwise return error alert
             Button {
-                viewModel.addPoints(username: viewModel.email)
+                if !viewModel.calculationOrder.isEmpty {
+                    viewModel.addPoints(username: viewModel.email)
+                } else {
+                    showError = true
+                }
+                
             } label: {
                 Text("Add Rewards Points")
                     .font(.subheadline)
@@ -55,7 +111,9 @@ struct ComparisonCalc: View {
                     .background(.blue)
                     .clipShape(RoundedRectangle(cornerRadius:10))
             }
-            
+            .alert(isPresented: $showError) {
+                Alert(title: Text("Error!"), message: Text("Calculation cart is empty!"))
+            }
             
         }// vstack
     }//body view

@@ -9,21 +9,40 @@ import SwiftUI
 
 struct CartCalc: View {
     @EnvironmentObject var viewModel: LoginController
+    @State private var showError = false
     
     var body: some View {
         List(viewModel.calculationOrder) { item in
             CartRow(item: item)
         }
         
-        
+        // Navigates user to comparison screen with cart items
         NavigationLink(destination: ComparisonCalc(viewModel: _viewModel, item_list: viewModel.calculationOrder)) {
-            Text("Calculate")
-                .font(.subheadline)
-                .foregroundStyle(.white)
-                .frame(width: 100, height: 50)
-                .background(.blue)
-                .clipShape(RoundedRectangle(cornerRadius:10))
+            // Checks if cart is empty before continuing and shows error if cart is empty
+            Button(action: {
+                if !viewModel.calculationOrder.isEmpty {
+                    viewModel.addPoints(username: viewModel.email)
+                } else {
+                    showError = true
+                }
+            }) {
+                Text("Calculate")
+                    .font(.subheadline)
+                    .foregroundColor(.white)
+                    .frame(width: 100, height: 50)
+                    .background(Color.blue)
+                    .clipShape(RoundedRectangle(cornerRadius:10))
+            }
         }
+        .alert(isPresented: $showError) {
+            Alert(
+                title: Text("Error"),
+                message: Text("Calculation order is empty!"),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+
+
     }
 }
 

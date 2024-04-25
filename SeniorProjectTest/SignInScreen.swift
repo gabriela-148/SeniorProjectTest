@@ -14,6 +14,7 @@ struct SignInScreen: View {
     @State var password = ""
     @State private var showAlert = false
     @State private var showNextView = false
+    @State private var login = true
     
     @EnvironmentObject var viewModel: LoginController
     

@@ -16,7 +16,7 @@ struct HomeScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                TabView(selection: $selectedTab) {
+                TabView(selection: $selectedTab) { // Side Menu code
                     Dashboard()
                         .tag(0)
                     
@@ -33,6 +33,7 @@ struct HomeScreen: View {
                 SideMenuScreen(isShowing: $showMenu, selectedTab: $selectedTab)
             }// vstack
         }
+        // Toolbar for side menu and cart screen functionality
         .toolbar(showMenu ? .hidden: .visible, for: .navigationBar)
         .navigationBarHidden(false)
         .navigationBarTitleDisplayMode(.inline)
@@ -50,7 +51,6 @@ struct HomeScreen: View {
                 }
             }
         }
-        //.padding()
         
     }// body}
     
