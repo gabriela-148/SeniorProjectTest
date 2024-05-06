@@ -7,6 +7,9 @@
 
 import Foundation
 
+// Creates a Food_item data struct that can store all of the attributes
+// listed in the Food table in the SQL database
+// Allows for better usability and compatibility across the code files
 struct Food_Item: Identifiable, Hashable {
     
     
@@ -17,6 +20,5 @@ struct Food_Item: Identifiable, Hashable {
     var imageName: String
     var carbonFP: Double
     var waterFP: Double
-    //var pointValue: Double
     
 }

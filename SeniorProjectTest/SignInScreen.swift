@@ -10,12 +10,13 @@ import SQLite3
 import Foundation
 
 struct SignInScreen: View {
+    // Variables to test user input is in database
     @State var email = ""
     @State var password = ""
     @State private var showAlert = false
     @State private var showNextView = false
     @State private var login = true
-    
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     
     var tan = Color(red: 255/255, green: 247/255, blue: 229/255)
@@ -28,7 +29,7 @@ struct SignInScreen: View {
                 Rectangle()
                     .foregroundColor(.white)
                     .edgesIgnoringSafeArea(.all)
-                
+                // Images for UI to look pretty
                 VStack {
                     Image("myfoodprint")
                         .frame(width: 350, height: 350, alignment: .center)
@@ -60,7 +61,7 @@ struct SignInScreen: View {
                         )
                         .padding(EdgeInsets(top: 20, leading: 40, bottom: 20, trailing: 40)) // Add padding as needed
                     
-                    
+                    // Checks if user input is in the database
                     Button(action: {
                         if !viewModel.login(username: email, password: password) {
                             showAlert = true
@@ -79,9 +80,7 @@ struct SignInScreen: View {
                             message: Text("Invalid credentials"),
                             dismissButton: .default(Text("OK")))
                     }
-                    
-                    //NavigationLink("Create Account", destination: SignUpView().environmentObject(viewModel))
-                    //   .padding()
+
                     
                     Spacer()
                     

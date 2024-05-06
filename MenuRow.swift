@@ -10,24 +10,29 @@ import SwiftUI
 import SwiftUI
 
 struct ItemRow: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     @State private var showAddAlert = false
     @State var showCart = false
     
-    
+    // Takes item from previous screen
     let item: Food_Item
     var body: some View {
+        
+        // Horizontally stacks images for the list view
         HStack {
-            Image(item.imageName.lowercased())//need to change to item.imageName and store link to DB
+            // Image
+            Image(item.imageName.lowercased())
                 .resizable()
                 .frame(width: 110, height: 110, alignment: .trailing)
+            // Burger name
             Text(item.name)
                 .font(.system(size: 20))
                 .fontWeight(.heavy)
                 .foregroundColor(Color.black)
             
             Spacer()
-            
+            // Adds burger to calculationOrder list
             Button {
                 viewModel.addToCalc(item: item)
                 showAddAlert = true
@@ -45,20 +50,25 @@ struct ItemRow: View {
 }
 
 struct CartRow: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     @State private var showRemoveAlert = false
-    
+    // Takes item from previous screen
     let item: Food_Item
     var body: some View {
+        // Horizontally stacks images for the list view
         HStack {
-            Image(item.imageName.lowercased())//need to change to item.imageName and store link to DB
+            // Image
+            Image(item.imageName.lowercased())
                 .resizable()
                 .frame(width: 110, height: 110, alignment: .trailing)
+            // Burger name
             Text(item.name)
                 .font(.system(size: 20))
                 .fontWeight(.heavy)
                 .foregroundColor(Color.black)
             Spacer()
+            // Removes burger to calculationOrder list
             Button {
                 viewModel.removeFromCalc(item: item)
                 showRemoveAlert = true

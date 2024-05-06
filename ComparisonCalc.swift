@@ -9,10 +9,11 @@ import SwiftUI
 import Charts
 
 struct ComparisonCalc: View {
-    
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     @State private var showError = false
     
+    // Takes list of food items from preivous screens
     let item_list: [Food_Item]
     
     var body: some View {

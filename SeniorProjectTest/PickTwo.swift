@@ -8,14 +8,17 @@
 import SwiftUI
 
 struct PickTwo: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
+                // Lists of items of the foodList using the ItemRow UI
                 List(viewModel.foodList) { item in
                     ItemRow(item: item)
                 }
+                // Users can go to cart after adding items
                 NavigationLink(destination: CartCalc()) {
                     Text("Go to Cart")
                         .font(.subheadline)

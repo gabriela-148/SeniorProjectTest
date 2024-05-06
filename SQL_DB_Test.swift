@@ -9,6 +9,7 @@ import Foundation
 import SQLite
 import UIKit
 
+// Code gotten from GitHub
 enum SideMenuOptionModel: Int, CaseIterable {
     case dashboard
     case pickTwo
@@ -47,6 +48,7 @@ extension SideMenuOptionModel: Identifiable {
 
 class LoginController: ObservableObject {
     
+    // Variables to be changed with database calls in funcitons below
     @Published var isSignedIn = false // changes view in real time
     @Published var name = ""
     @Published var email = ""
@@ -260,6 +262,7 @@ class LoginController: ObservableObject {
             
             }
             
+            // If query was successfully executed, store the correct information
             if let user2 = try db.pluck(emailQuery) {
                 success = true
                 

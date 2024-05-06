@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct InfoRow: View {
-    
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     let item: Food_Item
     

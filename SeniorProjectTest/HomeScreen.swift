@@ -9,6 +9,7 @@ import SwiftUI
 import SideMenu
 
 struct HomeScreen: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     @State private var showMenu = false
     @State private var selectedTab = 0
@@ -39,6 +40,7 @@ struct HomeScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
+                // Shows side menu when toggled
                 Button(action: {
                     showMenu.toggle()
                 }, label: {
@@ -46,6 +48,7 @@ struct HomeScreen: View {
                 })
             }
             ToolbarItem(placement: .topBarTrailing) {
+                // Takes user to their "cart" at any time
                 NavigationLink(destination: CartCalc()) {
                     Image(systemName: "cart")
                 }

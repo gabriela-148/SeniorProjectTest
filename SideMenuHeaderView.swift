@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// Code received form GitHub
 struct SideMenuHeaderView: View {
     @EnvironmentObject var viewModel: LoginController
     

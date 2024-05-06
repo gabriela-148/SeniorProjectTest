@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct Settings: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
+    // States that keep track of when alerts or text fields are shown to the user
     @State private var showPassAlert = false
     @State private var showTextFields = false
     @State private var showErrorAlert = false
     
+    // Variables to test whether the old pwd matches the user's pwd before changing it
     @State var oldPassword = ""
     @State var newPassword = ""
     
@@ -35,7 +38,7 @@ struct Settings: View {
                         .background(.blue)
                         .clipShape(RoundedRectangle(cornerRadius:10))
                         //.padding(.vertical)
-                    
+                    // Displays users data
                     VStack(alignment: .leading, spacing: 6) {
                         Text("\(viewModel.name)")
                             .font(.system(size: 30))
@@ -54,6 +57,7 @@ struct Settings: View {
                         .background(Color.white)
                         .foregroundColor(.black)
             Section {
+                // Shows the text fields to change the user's pwd if clicked
                 Button {
                     showTextFields = true
                 } label: {
@@ -65,7 +69,7 @@ struct Settings: View {
                         .clipShape(RoundedRectangle(cornerRadius:10))
                         .padding()
                     
-                }.alert(isPresented: $showPassAlert) {
+                }.alert(isPresented: $showPassAlert) { // if query is success shows this alert
                     Alert(title: Text("Success!"), message: Text("Password changed!"))
                 }
                 if showTextFields {
@@ -86,6 +90,7 @@ struct Settings: View {
                         .cornerRadius(10)
                     
                     Button {
+                        // if query is success sets the alert variables to true
                         if viewModel.resetPassword(username: viewModel.email, newPassword: newPassword, oldPassword: oldPassword) {
                             showPassAlert = true
                             showTextFields = false
@@ -109,7 +114,7 @@ struct Settings: View {
             }
 
             Spacer ()
-            
+            // User can signout if button is clicked, returns user to SignInScreen
             Button {
                 viewModel.signOut()
             } label: {

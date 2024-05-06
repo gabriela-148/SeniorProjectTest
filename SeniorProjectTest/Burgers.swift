@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct Burgers: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
-    //@ObservedObject var model = LoginController()
+
     var body: some View {
         VStack {
             Section {
+                // Lists out burgers in a scrollable list
                 List(viewModel.foodList){ item in
                     NavigationLink(destination: InfoScreen(item: item)) {
                         InfoRow(item: item)

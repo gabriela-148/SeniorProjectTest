@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Dashboard: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     
     var body: some View {
@@ -33,7 +34,7 @@ struct Dashboard: View {
                    
                 }
                 
-                // Desacription of ecological footprints
+                // Description of ecological footprints
                 Text("What is a carbon footprint?\nThe total amount of greenhouse gases, \nspecifically carbon dioxide that is emitted either directly or \nindirectly because of a human activity.")
                     .font(.subheadline)
                     .padding(8)

@@ -6,7 +6,8 @@
 //
 
 import Foundation
-
+// User data struct that stores data from usersList table in SQL Database
+// Allows to store data from DB and check inputs from user
 struct User: Identifiable, Hashable {
     
     

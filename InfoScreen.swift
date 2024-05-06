@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct InfoScreen: View {
+    // item given to this view
     let item: Food_Item
 
     var body: some View {

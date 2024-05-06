@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Code received form GitHub
 struct SideMenuRow: View {
     let option: SideMenuOptionModel
     @Binding var selectedOption: SideMenuOptionModel?

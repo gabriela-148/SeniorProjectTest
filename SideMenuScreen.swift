@@ -1,5 +1,5 @@
 import SwiftUI
-
+// Code received form GitHub
 struct SideMenuScreen: View {
     @Binding var isShowing: Bool
     @Binding var selectedTab: Int

@@ -11,6 +11,8 @@ import PythonKit
 // Python code
 let np = Python.import("numpy")
 
+// Calculates carbon footprint based on weight of burger
+// Calculations received from previous implementation of project
 func getCarbonFP(name: String, weight : any Numeric) -> any Numeric {
     var fp = 0.0
     if name == "McChicken" {
@@ -23,7 +25,8 @@ func getCarbonFP(name: String, weight : any Numeric) -> any Numeric {
     return fp
             
 }
-
+// Calculates water footprint based on weight of burger
+// Calculations received from previous implementation of project
 func getWaterFP(name: String, weight: any Numeric) -> any Numeric {
     var fp = 0.0
     if name == "McChicken" {
@@ -37,6 +40,7 @@ func getWaterFP(name: String, weight: any Numeric) -> any Numeric {
     return fp
 }
 
+// Calculates rewards points for burger given
 func getPoints(water: Double, carbon: Double) -> Int {
     let smallWater = 500.0
     let smallCarbon = 5.0

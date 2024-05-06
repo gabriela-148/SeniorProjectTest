@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct CartCalc: View {
+    // Envi object so can have access to database calls
     @EnvironmentObject var viewModel: LoginController
     @State private var showError = false
     
     var body: some View {
+        // Lists all item in order
         List(viewModel.calculationOrder) { item in
             CartRow(item: item)
         }
@@ -34,6 +36,7 @@ struct CartCalc: View {
                     .clipShape(RoundedRectangle(cornerRadius:10))
             }
         }
+        // Presents alert when error is true
         .alert(isPresented: $showError) {
             Alert(
                 title: Text("Error"),
